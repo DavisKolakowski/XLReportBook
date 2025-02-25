@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Data;
+    using System.IO;
     using System.Linq;
 
     using ReportBook.Models;
@@ -36,6 +37,18 @@
             {
                 Console.WriteLine($"ID: {row["InternalId"]}, Description: {row["Description"]}, Amount: {row["Amount"]}");
             }
+
+            using (var stream = new MemoryStream())
+            {
+                context.SaveToStream(stream);
+                stream.Position = 0;
+                using (var reader = new StreamReader(stream))
+                {
+                    Console.WriteLine(reader.ReadToEnd());
+                }
+            }
+
+            context.SaveToFile("reportbook.xlsx");
 
             context.Clear();
             Console.WriteLine($"First Report Count after Clear: {context.TestFirstReport.Data.Rows.Count}");
