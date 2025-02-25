@@ -12,6 +12,8 @@
         protected DataTable table;
         public DataTable Table => table;
 
+        private Dictionary<string, MemberInfo> memberMap;
+
         public ReportTable()
         {
             InitializeTable();
@@ -21,10 +23,26 @@
         {
             Type reportType = typeof(TSchema);
             string tableName = reportType.Name;
-
             table = new DataTable(tableName);
 
-            DataColumn idColumn = new DataColumn(Report.IdentityColumnKey, typeof(int))
+            DataColumn idColumn = CreateIdentityColumn();
+            table.Columns.Add(idColumn);
+            table.PrimaryKey = new[] { idColumn };
+
+            memberMap = reportType
+                .GetMembers(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
+                .Where(m => m.MemberType == MemberTypes.Property || m.MemberType == MemberTypes.Field)
+                .ToDictionary(m => m.Name);
+
+            foreach (var member in memberMap.Values)
+            {
+                AddColumnForMember(member);
+            }
+        }
+
+        private DataColumn CreateIdentityColumn()
+        {
+            return new DataColumn(Report.IdentityColumnKey, typeof(int))
             {
                 AutoIncrement = true,
                 AutoIncrementSeed = 1,
@@ -33,58 +51,56 @@
                 AllowDBNull = false,
                 Unique = true
             };
-            table.Columns.Add(idColumn);
-            table.PrimaryKey = new[] { idColumn };
-
-            foreach (var prop in reportType.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly))
-            {
-                AddColumnForMember(prop.PropertyType, prop.Name, prop);
-            }
-
-            foreach (var field in reportType.GetFields(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly))
-            {
-                AddColumnForMember(field.FieldType, field.Name, field);
-            }
         }
 
-        private void AddColumnForMember(Type memberType, string memberName, MemberInfo memberInfo)
+        private void AddColumnForMember(MemberInfo member)
         {
-            if (memberName == Report.IdentityColumnKey)
+            if (member.Name == Report.IdentityColumnKey)
             {
                 throw new InvalidOperationException($"Member '{Report.IdentityColumnKey}' is reserved for the identity column.");
             }
 
-            if (table.Columns.Contains(memberName))
+            if (table.Columns.Contains(member.Name))
             {
-                throw new InvalidOperationException($"Duplicate column name '{memberName}' in schema.");
+                throw new InvalidOperationException($"Duplicate column name '{member.Name}' in schema.");
             }
 
+            Type memberType = member is PropertyInfo prop ? prop.PropertyType : ((FieldInfo)member).FieldType;
             Type columnType = Nullable.GetUnderlyingType(memberType) ?? memberType;
-            var col = new DataColumn(memberName, columnType)
+
+            var col = new DataColumn(member.Name, columnType)
             {
                 AllowDBNull = !memberType.IsValueType || Nullable.GetUnderlyingType(memberType) != null,
                 ReadOnly = false,
                 Unique = false
             };
 
-            var captionAttr = memberInfo.GetCustomAttribute<ColumnCaptionAttribute>();
+            var captionAttr = member.GetCustomAttribute<ColumnCaptionAttribute>();
             if (captionAttr != null)
             {
                 col.Caption = captionAttr.Caption;
             }
 
-            var dateTimeModeAttr = memberInfo.GetCustomAttribute<DateTimeModeAttribute>();
-            if (dateTimeModeAttr != null)
+            if (columnType == typeof(DateTime) || columnType == typeof(DateTime?))
             {
-                DateTimeModeAttribute.Validate(memberInfo);
-                col.DateTimeMode = dateTimeModeAttr.Mode;
-            }
-            else if (memberType == typeof(DateTime))
-            {
-                col.DateTimeMode = DataSetDateTime.Local;
+                ConfigureDateTimeColumn(col, member);
             }
 
             table.Columns.Add(col);
+        }
+
+        private void ConfigureDateTimeColumn(DataColumn col, MemberInfo member)
+        {
+            var dateTimeModeAttr = member.GetCustomAttribute<DateTimeModeAttribute>();
+            if (dateTimeModeAttr != null)
+            {
+                DateTimeModeAttribute.Validate(member);
+                col.DateTimeMode = dateTimeModeAttr.Mode;
+            }
+            else
+            {
+                col.DateTimeMode = DataSetDateTime.Local;
+            }
         }
 
         public DataColumnCollection Schema => table.Columns;
@@ -96,21 +112,15 @@
             foreach (DataRow row in Data)
             {
                 var item = new TSchema();
-                foreach (DataColumn col in Schema)
+                foreach (var kvp in memberMap)
                 {
-                    if (col.ColumnName != Report.IdentityColumnKey)
+                    if (kvp.Key == Report.IdentityColumnKey)
+                        continue;
+
+                    if (Schema.Contains(kvp.Key))
                     {
-                        var prop = typeof(TSchema).GetProperty(col.ColumnName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
-                        var field = prop == null ? typeof(TSchema).GetField(col.ColumnName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly) : null;
-                        object value = row[col.ColumnName] is DBNull ? null : row[col.ColumnName];
-                        if (prop != null && prop.CanWrite)
-                        {
-                            prop.SetValue(item, value);
-                        }
-                        else if (field != null)
-                        {
-                            field.SetValue(item, value);
-                        }
+                        object value = row[kvp.Key] is DBNull ? null : row[kvp.Key];
+                        SetMemberValue(item, kvp.Value, value);
                     }
                 }
                 list.Add(item);
@@ -124,21 +134,40 @@
             foreach (var item in data)
             {
                 var row = table.NewRow();
-                foreach (var prop in typeof(TSchema).GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly))
+                foreach (var kvp in memberMap)
                 {
-                    if (table.Columns.Contains(prop.Name))
+                    if (Schema.Contains(kvp.Key))
                     {
-                        row[prop.Name] = prop.GetValue(item) ?? DBNull.Value;
-                    }
-                }
-                foreach (var field in typeof(TSchema).GetFields(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly))
-                {
-                    if (table.Columns.Contains(field.Name))
-                    {
-                        row[field.Name] = field.GetValue(item) ?? DBNull.Value;
+                        object value = GetMemberValue(item, kvp.Value) ?? DBNull.Value;
+                        row[kvp.Key] = value;
                     }
                 }
                 table.Rows.Add(row);
+            }
+        }
+
+        private object GetMemberValue(object instance, MemberInfo member)
+        {
+            if (member is PropertyInfo prop)
+            {
+                return prop.GetValue(instance);
+            }
+            else if (member is FieldInfo field)
+            {
+                return field.GetValue(instance);
+            }
+            throw new InvalidOperationException("Unsupported member type.");
+        }
+
+        private void SetMemberValue(object instance, MemberInfo member, object value)
+        {
+            if (member is PropertyInfo prop && prop.CanWrite)
+            {
+                prop.SetValue(instance, value);
+            }
+            else if (member is FieldInfo field)
+            {
+                field.SetValue(instance, value);
             }
         }
     }
