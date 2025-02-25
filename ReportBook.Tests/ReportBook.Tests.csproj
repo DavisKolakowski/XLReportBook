@@ -56,13 +56,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Tests.4.6.1\XLReport.Tests.Runner.csproj">
+    <ProjectReference Include="..\ReportBook.Tests.Runtime\ReportBook.Tests.Runtime.csproj">
       <Project>{73AAF80B-0066-4134-A22A-6F561FD91AA9}</Project>
-      <Name>XLReport.Tests.Runner</Name>
+      <Name>ReportBook.Tests.Runtime</Name>
     </ProjectReference>
-    <ProjectReference Include="..\XLReport\XLReport.csproj">
+    <ProjectReference Include="..\ReportBook\ReportBook.csproj">
       <Project>{b1092fa2-096c-48c7-920e-d00ba5269e02}</Project>
-      <Name>XLReport</Name>
+      <Name>ReportBook</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>

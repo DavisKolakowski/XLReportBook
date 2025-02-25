@@ -1,7 +1,7 @@
-﻿namespace XLReport.Samples
+﻿namespace ReportBook.Samples
 {
-    using XLReport.Attributes;
-    using XLReport.Models;
+    using ReportBook.Attributes;
+    using ReportBook.Models;
 
     public class MySecondTestReport : Report
     {

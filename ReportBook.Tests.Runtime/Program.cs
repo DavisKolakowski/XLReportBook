@@ -1,18 +1,18 @@
-﻿namespace XLReport.Tests.Runner
+﻿namespace ReportBook.Tests.Runtime
 {
     using System;
     using System.Collections.Generic;
     using System.Data;
     using System.Linq;
 
-    using XLReport.Models;
-    using XLReport.Samples;
+    using ReportBook.Models;
+    using ReportBook.Samples;
 
     public class Program
     {
         public static void Main()
         {
-            var context = new MyReportCollection();
+            var context = new MyReportContext();
             context.Refresh(new[]
             {
                 new MyFirstTestReport { Name = "Alice", CreatedDate = new DateTime(2025, 2, 25, 1, 3, 51, DateTimeKind.Utc), Value = 10 },
@@ -24,7 +24,7 @@
                 new MySecondTestReport { Description = "Item B", Amount = 15.5 }
             });
 
-            var firstList = context.TestFirstReportStore.ToList();
+            var firstList = context.TestFirstReport.ToList();
             Console.WriteLine("First Report List:");
             foreach (var item in firstList)
             {
@@ -32,13 +32,13 @@
             }
 
             Console.WriteLine("Second Report Table:");
-            foreach (DataRow row in context.TestSecondReportStore.Data.Rows)
+            foreach (DataRow row in context.TestSecondReport.Data.Rows)
             {
                 Console.WriteLine($"ID: {row["InternalId"]}, Description: {row["Description"]}, Amount: {row["Amount"]}");
             }
 
             context.Clear();
-            Console.WriteLine($"First Report Count after Clear: {context.TestFirstReportStore.Data.Rows.Count}");
+            Console.WriteLine($"First Report Count after Clear: {context.TestFirstReport.Data.Rows.Count}");
         }
     }
 }

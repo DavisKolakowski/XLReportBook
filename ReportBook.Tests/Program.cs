@@ -1,17 +1,17 @@
-﻿namespace XLReport.Tests
+﻿namespace ReportBook.Tests
 {
     using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using XLReport.Tests.Runner;
-    using XLReport.Models;
+    using ReportBook.Tests.Runtime;
+    using ReportBook.Models;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
-    using XLReport.Attributes;
+    using ReportBook.Attributes;
     using System.Data;
-    using XLReport.Context;
-    using XLReport.Samples;
+    using ReportBook.Context;
+    using ReportBook.Samples;
 
     [TestClass()]
     public class Program
@@ -149,8 +149,8 @@
         [TestMethod]
         public void Clear_ShouldRemoveAllData()
         {
-            var context = new MyReportCollection();
-            var store = context.TestFirstReportStore;
+            var context = new MyReportContext();
+            var store = context.TestFirstReport;
             store.Refresh(new[] { new MyFirstTestReport { Name = "Test", CreatedDate = DateTime.UtcNow, Value = 42 } });
             context.Clear();
             Assert.AreEqual(0, store.Data.Rows.Count, "DataTable should be empty after Clear.");

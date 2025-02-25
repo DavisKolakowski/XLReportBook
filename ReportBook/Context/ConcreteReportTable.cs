@@ -1,6 +1,6 @@
-﻿namespace XLReport.Context
+﻿namespace ReportBook.Context
 {
-    using XLReport.Models;
+    using ReportBook.Models;
 
     public class ConcreteReportTable<TSchema> : ReportTable<TSchema> where TSchema : Report, new() { }
 }

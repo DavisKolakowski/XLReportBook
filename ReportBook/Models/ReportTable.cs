@@ -1,11 +1,11 @@
-﻿namespace XLReport.Models
+﻿namespace ReportBook.Models
 {
     using System.Collections.Generic;
     using System.Data;
     using System.Linq;
     using System.Reflection;
     using System;
-    using XLReport.Attributes;
+    using ReportBook.Attributes;
 
     public abstract class ReportTable<TSchema> where TSchema : Report, new()
     {
@@ -24,7 +24,7 @@
 
             table = new DataTable(tableName);
 
-            DataColumn idColumn = new DataColumn(Report.OrderByKey, typeof(int))
+            DataColumn idColumn = new DataColumn(Report.IdentityColumnKey, typeof(int))
             {
                 AutoIncrement = true,
                 AutoIncrementSeed = 1,
@@ -49,9 +49,9 @@
 
         private void AddColumnForMember(Type memberType, string memberName, MemberInfo memberInfo)
         {
-            if (memberName == Report.OrderByKey)
+            if (memberName == Report.IdentityColumnKey)
             {
-                throw new InvalidOperationException($"Member '{Report.OrderByKey}' is reserved for the identity column.");
+                throw new InvalidOperationException($"Member '{Report.IdentityColumnKey}' is reserved for the identity column.");
             }
 
             if (table.Columns.Contains(memberName))
@@ -98,7 +98,7 @@
                 var item = new TSchema();
                 foreach (DataColumn col in Schema)
                 {
-                    if (col.ColumnName != Report.OrderByKey)
+                    if (col.ColumnName != Report.IdentityColumnKey)
                     {
                         var prop = typeof(TSchema).GetProperty(col.ColumnName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
                         var field = prop == null ? typeof(TSchema).GetField(col.ColumnName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly) : null;

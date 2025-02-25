@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.13.35806.99
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XLReport", "XLReport\XLReport.csproj", "{B1092FA2-096C-48C7-920E-D00BA5269E02}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReportBook", "ReportBook\ReportBook.csproj", "{B1092FA2-096C-48C7-920E-D00BA5269E02}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XLReport.Tests.Runner", "Tests.4.6.1\XLReport.Tests.Runner.csproj", "{73AAF80B-0066-4134-A22A-6F561FD91AA9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReportBook.Tests.Runtime", "ReportBook.Tests.Runtime\ReportBook.Tests.Runtime.csproj", "{73AAF80B-0066-4134-A22A-6F561FD91AA9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XLReport.Tests", "Tests.4.6.1Tests\XLReport.Tests.csproj", "{70902E13-23C1-4D7D-8EE2-0646F5FF3E65}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReportBook.Tests", "ReportBook.Tests\ReportBook.Tests.csproj", "{70902E13-23C1-4D7D-8EE2-0646F5FF3E65}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

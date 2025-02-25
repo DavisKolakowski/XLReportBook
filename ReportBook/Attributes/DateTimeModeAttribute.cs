@@ -1,4 +1,4 @@
-﻿namespace XLReport.Attributes
+﻿namespace ReportBook.Attributes
 {
     using System.Reflection;
     using System;

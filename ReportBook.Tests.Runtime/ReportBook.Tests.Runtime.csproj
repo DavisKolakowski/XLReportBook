@@ -50,9 +50,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\XLReport\XLReport.csproj">
+    <ProjectReference Include="..\ReportBook\ReportBook.csproj">
       <Project>{b1092fa2-096c-48c7-920e-d00ba5269e02}</Project>
-      <Name>XLReport</Name>
+      <Name>ReportBook</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

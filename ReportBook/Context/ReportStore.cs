@@ -1,10 +1,10 @@
-﻿namespace XLReport.Context
+﻿namespace ReportBook.Context
 {
     using System.Collections.Generic;
     using System.Data;
     using System.Reflection;
     using System;
-    using XLReport.Models;
+    using ReportBook.Models;
 
     public abstract class ReportStore
     {

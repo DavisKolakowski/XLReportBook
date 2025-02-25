@@ -1,10 +1,10 @@
-﻿namespace XLReport.Samples
+﻿namespace ReportBook.Samples
 {
     using System.Data;
     using System;
 
-    using XLReport.Attributes;
-    using XLReport.Models;
+    using ReportBook.Attributes;
+    using ReportBook.Models;
 
     public class MyFirstTestReport : Report
     {

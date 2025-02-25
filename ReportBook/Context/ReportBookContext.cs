@@ -1,15 +1,14 @@
-﻿namespace XLReport.Context
+﻿namespace ReportBook.Context
 {
     using System.Collections.Generic;
-    using System.Reflection;
     using System;
-    using XLReport.Models;
+    using ReportBook.Models;
 
-    public abstract class ReportBookCollectionContext
+    public abstract class ReportBookContext
     {
         protected Dictionary<Type, ReportStore> reportStoresByType = new Dictionary<Type, ReportStore>();
 
-        protected ReportBookCollectionContext()
+        protected ReportBookContext()
         {
             InitializeStores();
         }
