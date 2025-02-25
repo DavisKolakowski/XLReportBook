@@ -1,0 +1,44 @@
+﻿namespace XLReport.Tests.Runner
+{
+    using System;
+    using System.Collections.Generic;
+    using System.Data;
+    using System.Linq;
+
+    using XLReport.Models;
+    using XLReport.Samples;
+
+    public class Program
+    {
+        public static void Main()
+        {
+            var context = new MyReportCollection();
+            context.Refresh(new[]
+            {
+                new MyFirstTestReport { Name = "Alice", CreatedDate = new DateTime(2025, 2, 25, 1, 3, 51, DateTimeKind.Utc), Value = 10 },
+                new MyFirstTestReport { Name = "Bob", CreatedDate = new DateTime(2025, 2, 24, 1, 3, 51, DateTimeKind.Utc), Value = 20 }
+            });
+            context.Refresh(new[]
+            {
+                new MySecondTestReport { Description = "Item A", Amount = 5.5 },
+                new MySecondTestReport { Description = "Item B", Amount = 15.5 }
+            });
+
+            var firstList = context.TestFirstReportStore.ToList();
+            Console.WriteLine("First Report List:");
+            foreach (var item in firstList)
+            {
+                Console.WriteLine($"Name: {item.Name}, CreatedDate: {item.CreatedDate} (Kind: {item.CreatedDate.Kind}), Value: {item.Value}");
+            }
+
+            Console.WriteLine("Second Report Table:");
+            foreach (DataRow row in context.TestSecondReportStore.Data.Rows)
+            {
+                Console.WriteLine($"ID: {row["InternalId"]}, Description: {row["Description"]}, Amount: {row["Amount"]}");
+            }
+
+            context.Clear();
+            Console.WriteLine($"First Report Count after Clear: {context.TestFirstReportStore.Data.Rows.Count}");
+        }
+    }
+}
