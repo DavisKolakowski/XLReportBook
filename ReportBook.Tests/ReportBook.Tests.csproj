@@ -6,9 +6,9 @@
     <ProjectGuid>{70902E13-23C1-4D7D-8EE2-0646F5FF3E65}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Tests._4._6._1Tests</RootNamespace>
-    <AssemblyName>Tests.4.6.1Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <RootNamespace>ReportBook.Tests</RootNamespace>
+    <AssemblyName>ReportBook.Tests</AssemblyName>
+    <TargetFrameworkVersion>v4.8.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -36,8 +36,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DocumentFormat.OpenXml, Version=2.14.0.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
+      <HintPath>..\packages\DocumentFormat.OpenXml.2.14.0\lib\net46\DocumentFormat.OpenXml.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -57,13 +62,16 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ReportBook.Tests.Runtime\ReportBook.Tests.Runtime.csproj">
-      <Project>{73AAF80B-0066-4134-A22A-6F561FD91AA9}</Project>
+      <Project>{73aaf80b-0066-4134-a22a-6f561fd91aa9}</Project>
       <Name>ReportBook.Tests.Runtime</Name>
     </ProjectReference>
     <ProjectReference Include="..\ReportBook\ReportBook.csproj">
       <Project>{b1092fa2-096c-48c7-920e-d00ba5269e02}</Project>
       <Name>ReportBook</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

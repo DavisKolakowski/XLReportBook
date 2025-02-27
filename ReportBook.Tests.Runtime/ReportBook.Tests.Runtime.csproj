@@ -6,12 +6,13 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{73AAF80B-0066-4134-A22A-6F561FD91AA9}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Tests._4._6._1</RootNamespace>
-    <AssemblyName>Tests.4.6.1</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <RootNamespace>ReportBook.Tests.Runtime</RootNamespace>
+    <AssemblyName>ReportBook.Tests.Runtime</AssemblyName>
+    <TargetFrameworkVersion>v4.8.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>

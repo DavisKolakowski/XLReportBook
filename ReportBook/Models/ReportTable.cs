@@ -94,7 +94,6 @@
             var dateTimeModeAttr = member.GetCustomAttribute<DateTimeModeAttribute>();
             if (dateTimeModeAttr != null)
             {
-                DateTimeModeAttribute.Validate(member);
                 col.DateTimeMode = dateTimeModeAttr.Mode;
             }
             else
